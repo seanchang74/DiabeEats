@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- 引入 SweetAlert2 库 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11.0.12/dist/sweetalert2.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://static.line-scdn.net/liff/edge/2.1/sdk.js "></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.0.0/jquery.min.js"></script>
+
+    <script>
+        window.onload = function() {
+            // 使用 SweetAlert2 创建警告框
+            Swal.fire({
+                title: '請詳閱隱私權內容',
+                text: '',
+                icon: 'warning'
+            });
+        };
+        
+    </script>
+
+    <script>
+        function pushMsg(pname, pbirth, pgender, pheight, pweight, pexercise, pdietary) {
+          // 檢查必填字段是否已填寫
+          if (pname == '' || pbirth == '' || pgender == '' || pheight == '' || pweight == '' || pexercise == '' || pdietary == '') {
+                Swal.fire({
+                    title: '請完整填寫個人資訊',
+                    text: '',
+                    icon: 'warning'
+                });
+                return;
+            }
+
+            var msg = "###";  //回傳訊息字串
+            msg = msg + pname + "/";
+            msg = msg + pbirth + "/";
+            msg = msg + pgender + "/";
+            msg = msg + pheight + "/";
+            msg = msg + pweight + "/";
+            msg = msg + pexercise + "/";
+            msg = msg + pdietary;
+            
+            liff.sendMessages([  //將使用者輸入的資料以固定格式回傳給後端
+                    { 
+                        type: 'text',
+                        text: msg,
+                    },
+                ])
+                .then(() => {
+                    liff.closeWindow();  //關閉視窗
+                });
+        }
+        
+        $(document).ready(function () {
+                liff.init({
+                    liffId: '{{ liffid }}' //LIFF ID需要更換
+            });
+            $('#uploadButton').click(function () {  //按下確定鈕
+                pushMsg($('#nameInput').val(), $('#ageInput').val(), $("[name='gender']").val(), $('#heightInput').val(), $('#weightInput').val(), $("[name='exercise']").val(), $("[name='dietaryNeeds']").val());
+            });
+        });
+
+    </script>
+
+    <title>註冊表單</title>
+    <style>
+        /* Add your CSS styles here */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f0f0;
+            /*background-image: url('your-background-image.jpg');  替换为您的背景图像路径 */
+            background-size: cover; /* 覆盖整个屏幕 */
+            background-repeat: no-repeat; /* 不重复 */
+            background-attachment: fixed; /* 固定背景，防止滚动时背景移动 */
+        }
+        
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: auto; /* 設定高度為 "auto" */
+            width: auto;
+            background-color: #f0f0f0;
+        }
+        .header {
+            margin-top: 18%;
+            width: 100%;
+            text-align: center;
+            
+            background-color: #f0f0f0;
+        }
+        .input {
+            width: 70%;
+            height: 30%;
+            border: 3px solid #4682B4;
+            background-color: #FFFFFF;
+            margin: 5px 0;
+            padding: 10px;
+            color: black;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .select {
+            width: 72%;
+            height: 30%;
+            border: 3px solid #4682B4;
+            background-color: #FFFFFF;
+            margin: 5px 0;
+            padding: 10px;
+            color: black;
+            border-radius: 15px;
+            font-size: 16px;
+            font-weight: 500;
+        }
+        .button {
+            width: 60%;
+            height: 40px;
+            border: none;
+            border-radius: 50px;
+            background-color: #8b4513;
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+            text-align: center;
+            padding: 10px;
+            margin: 10px 0;
+            cursor: pointer;
+        }
+        a {
+            font-size: 120%;
+            color: blue; /* 设置链接文本颜色为蓝色 */
+            text-decoration: none; /* 去除下划线 */
+            font-weight: bold; /* 设置文本为粗体 */
+        }
+
+        /* 设置鼠标悬停时链接的样式 */
+        a:hover {
+            color: darkblue; /* 鼠标悬停时，文本颜色变为深蓝色 */
+        }
+        .privacy-policy {
+            display: flex;
+            align-items: center;
+        }
+
+        .privacy-policy label {
+            margin-left: 5px; /* 可以根据需要调整间距 */
+        }
+        /* 修改复选框的大小 */
+        #privacyCheckbox {
+            width: 20px; /* 宽度 */
+            height: 20px; /* 高度 */
+        }
+
+        /* 修改复选框的颜色 */
+        #privacyCheckbox:checked {
+            background-color: #007bff; /* 选中时的背景颜色 */
+        }
+
+        /* 添加边框样式 */
+        #privacyCheckbox {
+            border: 2px solid #333; /* 边框宽度和颜色 */
+            border-radius: 5px; /* 边框圆角 */
+        }
+
+        /* 修改复选框标签的样式 */
+        label[for="privacyCheckbox"] {
+            font-weight: bold; /* 文本加粗 */
+            color: #333; /* 文本颜色 */
+        }
+        .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+
+      .b-example-divider {
+        width: 100%;
+        height: 3rem;
+        background-color: rgba(0, 0, 0, .1);
+        border: solid rgba(0, 0, 0, .15);
+        border-width: 1px 0;
+        box-shadow: inset 0 .5em 1.5em rgba(0, 0, 0, .1), inset 0 .125em .5em rgba(0, 0, 0, .15);
+      }
+
+      .b-example-vr {
+        flex-shrink: 0;
+        width: 1.5rem;
+        height: 100vh;
+      }
+
+      .bi {
+        vertical-align: -.125em;
+        fill: currentColor;
+      }
+
+      .nav-scroller {
+        position: relative;
+        z-index: 2;
+        height: 2.75rem;
+        overflow-y: hidden;
+      }
+
+      .nav-scroller .nav {
+        display: flex;
+        flex-wrap: nowrap;
+        padding-bottom: 1rem;
+        margin-top: -1px;
+        overflow-x: auto;
+        text-align: center;
+        white-space: nowrap;
+        -webkit-overflow-scrolling: touch;
+      }
+
+      .btn-bd-primary {
+        --bd-violet-bg: #712cf9;
+        --bd-violet-rgb: 112.520718, 44.062154, 249.437846;
+
+        --bs-btn-font-weight: 600;
+        --bs-btn-color: var(--bs-white);
+        --bs-btn-bg: var(--bd-violet-bg);
+        --bs-btn-border-color: var(--bd-violet-bg);
+        --bs-btn-hover-color: var(--bs-white);
+        --bs-btn-hover-bg: #6528e0;
+        --bs-btn-hover-border-color: #6528e0;
+        --bs-btn-focus-shadow-rgb: var(--bd-violet-rgb);
+        --bs-btn-active-color: var(--bs-btn-hover-color);
+        --bs-btn-active-bg: #5a23c8;
+        --bs-btn-active-border-color: #5a23c8;
+      }
+
+      .bd-mode-toggle {
+        z-index: 1500;
+      }
+
+      .bd-mode-toggle .dropdown-menu .active .bi {
+        display: block !important;
+      }
+    
+    </style>
+    <!-- <link rel="stylesheet" href="style.css">-->
+</head>
+<body>
+    <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+        <symbol id="check2" viewBox="0 0 16 16">
+          <path d="M13.854 3.646a.5.5 0 0 1 0 .708l-7 7a.5.5 0 0 1-.708 0l-3.5-3.5a.5.5 0 1 1 .708-.708L6.5 10.293l6.646-6.647a.5.5 0 0 1 .708 0z"/>
+        </symbol>
+        <symbol id="circle-half" viewBox="0 0 16 16">
+          <path d="M8 15A7 7 0 1 0 8 1v14zm0 1A8 8 0 1 1 8 0a8 8 0 0 1 0 16z"/>
+        </symbol>
+        <symbol id="moon-stars-fill" viewBox="0 0 16 16">
+          <path d="M6 .278a.768.768 0 0 1 .08.858 7.208 7.208 0 0 0-.878 3.46c0 4.021 3.278 7.277 7.318 7.277.527 0 1.04-.055 1.533-.16a.787.787 0 0 1 .81.316.733.733 0 0 1-.031.893A8.349 8.349 0 0 1 8.344 16C3.734 16 0 12.286 0 7.71 0 4.266 2.114 1.312 5.124.06A.752.752 0 0 1 6 .278z"/>
+          <path d="M10.794 3.148a.217.217 0 0 1 .412 0l.387 1.162c.173.518.579.924 1.097 1.097l1.162.387a.217.217 0 0 1 0 .412l-1.162.387a1.734 1.734 0 0 0-1.097 1.097l-.387 1.162a.217.217 0 0 1-.412 0l-.387-1.162A1.734 1.734 0 0 0 9.31 6.593l-1.162-.387a.217.217 0 0 1 0-.412l1.162-.387a1.734 1.734 0 0 0 1.097-1.097l.387-1.162zM13.863.099a.145.145 0 0 1 .274 0l.258.774c.115.346.386.617.732.732l.774.258a.145.145 0 0 1 0 .274l-.774.258a1.156 1.156 0 0 0-.732.732l-.258.774a.145.145 0 0 1-.274 0l-.258-.774a1.156 1.156 0 0 0-.732-.732l-.774-.258a.145.145 0 0 1 0-.274l.774-.258c.346-.115.617-.386.732-.732L13.863.1z"/>
+        </symbol>
+        <symbol id="sun-fill" viewBox="0 0 16 16">
+          <path d="M8 12a4 4 0 1 0 0-8 4 4 0 0 0 0 8zM8 0a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 0zm0 13a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-1 0v-2A.5.5 0 0 1 8 13zm8-5a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2a.5.5 0 0 1 .5.5zM3 8a.5.5 0 0 1-.5.5h-2a.5.5 0 0 1 0-1h2A.5.5 0 0 1 3 8zm10.657-5.657a.5.5 0 0 1 0 .707l-1.414 1.415a.5.5 0 1 1-.707-.708l1.414-1.414a.5.5 0 0 1 .707 0zm-9.193 9.193a.5.5 0 0 1 0 .707L3.05 13.657a.5.5 0 0 1-.707-.707l1.414-1.414a.5.5 0 0 1 .707 0zm9.193 2.121a.5.5 0 0 1-.707 0l-1.414-1.414a.5.5 0 0 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .707zM4.464 4.465a.5.5 0 0 1-.707 0L2.343 3.05a.5.5 0 1 1 .707-.707l1.414 1.414a.5.5 0 0 1 0 .708z"/>
+        </symbol>
+    </svg>
+  
+  
+      
+  <svg xmlns="http://www.w3.org/2000/svg" class="d-none">
+    <symbol id="bookmark-star" viewBox="0 0 16 16">
+      <path d="M7.84 4.1a.178.178 0 0 1 .32 0l.634 1.285a.178.178 0 0 0 .134.098l1.42.206c.145.021.204.2.098.303L9.42 6.993a.178.178 0 0 0-.051.158l.242 1.414a.178.178 0 0 1-.258.187l-1.27-.668a.178.178 0 0 0-.165 0l-1.27.668a.178.178 0 0 1-.257-.187l.242-1.414a.178.178 0 0 0-.05-.158l-1.03-1.001a.178.178 0 0 1 .098-.303l1.42-.206a.178.178 0 0 0 .134-.098L7.84 4.1z"/>
+      <path d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v13.5a.5.5 0 0 1-.777.416L8 13.101l-5.223 2.815A.5.5 0 0 1 2 15.5V2zm2-1a1 1 0 0 0-1 1v12.566l4.723-2.482a.5.5 0 0 1 .554 0L13 14.566V2a1 1 0 0 0-1-1H4z"/>
+    </symbol>
+  
+    <symbol id="grid-fill" viewBox="0 0 16 16">
+      <path d="M1 2.5A1.5 1.5 0 0 1 2.5 1h3A1.5 1.5 0 0 1 7 2.5v3A1.5 1.5 0 0 1 5.5 7h-3A1.5 1.5 0 0 1 1 5.5v-3zm8 0A1.5 1.5 0 0 1 10.5 1h3A1.5 1.5 0 0 1 15 2.5v3A1.5 1.5 0 0 1 13.5 7h-3A1.5 1.5 0 0 1 9 5.5v-3zm-8 8A1.5 1.5 0 0 1 2.5 9h3A1.5 1.5 0 0 1 7 10.5v3A1.5 1.5 0 0 1 5.5 15h-3A1.5 1.5 0 0 1 1 13.5v-3zm8 0A1.5 1.5 0 0 1 10.5 9h3a1.5 1.5 0 0 1 1.5 1.5v3a1.5 1.5 0 0 1-1.5 1.5h-3A1.5 1.5 0 0 1 9 13.5v-3z"/>
+    </symbol>
+  
+    <symbol id="film" viewBox="0 0 16 16">
+      <path d="M0 1a1 1 0 0 1 1-1h14a1 1 0 0 1 1 1v14a1 1 0 0 1-1 1H1a1 1 0 0 1-1-1V1zm4 0v6h8V1H4zm8 8H4v6h8V9zM1 1v2h2V1H1zm2 3H1v2h2V4zM1 7v2h2V7H1zm2 3H1v2h2v-2zm-2 3v2h2v-2H1zM15 1h-2v2h2V1zm-2 3v2h2V4h-2zm2 3h-2v2h2V7zm-2 3v2h2v-2h-2zm2 3h-2v2h2v-2z"/>
+    </symbol>
+  
+    <symbol id="github" viewBox="0 0 16 16">
+      <path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.012 8.012 0 0 0 16 8c0-4.42-3.58-8-8-8z"/>
+    </symbol>
+  
+    <symbol id="twitter" viewBox="0 0 16 16">
+      <path d="M5.026 15c6.038 0 9.341-5.003 9.341-9.334 0-.14 0-.282-.006-.422A6.685 6.685 0 0 0 16 3.542a6.658 6.658 0 0 1-1.889.518 3.301 3.301 0 0 0 1.447-1.817 6.533 6.533 0 0 1-2.087.793A3.286 3.286 0 0 0 7.875 6.03a9.325 9.325 0 0 1-6.767-3.429 3.289 3.289 0 0 0 1.018 4.382A3.323 3.323 0 0 1 .64 6.575v.045a3.288 3.288 0 0 0 2.632 3.218 3.203 3.203 0 0 1-.865.115 3.23 3.23 0 0 1-.614-.057 3.283 3.283 0 0 0 3.067 2.277A6.588 6.588 0 0 1 .78 13.58a6.32 6.32 0 0 1-.78-.045A9.344 9.344 0 0 0 5.026 15z"/>
+    </symbol>
+  
+    <symbol id="facebook" viewBox="0 0 16 16">
+      <path d="M16 8.049c0-4.446-3.582-8.05-8-8.05C3.58 0-.002 3.603-.002 8.05c0 4.017 2.926 7.347 6.75 7.951v-5.625h-2.03V8.05H6.75V6.275c0-2.017 1.195-3.131 3.022-3.131.876 0 1.791.157 1.791.157v1.98h-1.009c-.993 0-1.303.621-1.303 1.258v1.51h2.218l-.354 2.326H9.25V16c3.824-.604 6.75-3.934 6.75-7.951z"/>
+    </symbol>
+  </svg>
+
+  <div class="modal modal-sheet position-static d-block bg-body-secondary p-4 py-md-5" tabindex="-1" role="dialog" id="modalSignin">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content rounded-4 shadow">
+        <div class="modal-header p-5 pb-4 border-bottom-0">
+          <h1 class="fw-bold mb-0" style="font-size: 120%;">請填寫您的基本資料</h1>
+
+          <!-- <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close" onclick="clearFormFields()"></button> -->
+        </div>
+
+    <div class="modal-body p-5 pt-0">
+    <div id="fom1"> <!-- 表单开始，指定提交方法和处理路由 -->
+        <div class="mb-3">
+                
+            <div class="form-floating">
+                <input type="text" class="form-control rounded-4 border-2" id="nameInput" name="name" placeholder="請輸入您的使用者名稱">
+                <label for="nameInput">請輸入您的使用者名稱</label>
+                <div class="invalid-feedback">
+                    Name on card is required
+                </div>
+            </div>
+        </div>
+
+        <div class="mb-3">
+
+            <div class="form-floating">
+                <input type="text" class="form-control rounded-4 border-2" id="ageInput" name="age" placeholder="請輸入您的年齡">
+                <label for="ageInput">請輸入您的年齡</label>
+                <div class="invalid-feedback">
+                    Name on card is required
+                </div>
+            </div>
+        </div>
+    
+        <div class="mb-3">
+            
+            <div class="form-floating">
+                <select class="form-select rounded-4 border-2" id="genderSelect" name="gender">
+                    <option value=""> </option>
+                    <option value="1">男性(male)</option>
+                    <option value="2">女性(female)</option>
+                </select>
+                <label for="genderSelect">請選擇您的性別</label>
+                <div class="invalid-feedback">
+                    Please select a valid country.
+                  </div>
+            </div>
+        </div>
+    
+        <div class="mb-3">
+            
+            <div class="form-floating">
+                <input type="text" class="form-control rounded-4 border-2" id="heightInput" name="height" placeholder="請輸入您的身高(cm)">
+                <label for="heightInput">請輸入您的身高(cm)</label>
+                <div class="invalid-feedback">
+                    Please select a valid country.
+                  </div>
+            </div>
+        </div>
+    
+        <div class="mb-3">
+            
+            <div class="form-floating">
+                <input type="text" class="form-control rounded-4 border-2" id="weightInput" name="weight" placeholder="請輸入您的體重(kg)">
+                <label for="weightInput">請輸入您的體重(kg)</label>
+                <div class="invalid-feedback">
+                    Please select a valid country.
+                  </div>
+            </div>
+        </div>
+    
+        <div class="mb-3">
+            
+            <div class="form-floating">
+              <select class="form-select rounded-4 border-2"  id="exerciseSelect" name="exercise" placeholder="請輸入您每周的運動次數">
+                    <option value=""> </option>
+                    <option value="0">無運動</option>
+                    <option value="2">1~3次</option>
+                    <option value="4">4~5次</option>
+                    <option value="6">6~7次</option>
+                    <option value="8">7次以上</option>
+                
+              </select>
+              <label for="exerciseSelect">請選擇您每周的運動次數</label>
+              <div class="invalid-feedback">
+                Please select a valid country.
+              </div>
+            </div>
+        </div>
+    
+        <div class="mb-3">
+            <div class="form-floating">
+                <select class="form-select rounded-4 border-2" id="dietaryNeedsSelect" name="dietaryNeeds">
+                    <option value=""> </option>
+                    <option value="0">否(正常飲食)</option>
+                    <option value="1">一型糖尿病患者</option>
+                    <option value="2">二型糖尿病患者</option>
+                </select>
+                <label for="dietaryNeedsSelect">請問您是否為糖尿病患者</label>
+                <div class="invalid-feedback">
+                    Please select a valid country.
+                  </div>
+            </div>
+        </div>
+    
+        <div class="privacy-policy">
+            <input type="checkbox" id="privacyCheckbox">
+            <label for="privacyCheckbox" style="font-size: 70%;"><a href="/DiabeEats/privacy" target="_blank">同意隱私權政策(點擊查看)</a></label>
+        </div>
+        <hr class="my-4">
+        <button class="w-100 mb-2 btn btn-lg rounded-4 btn-primary" id="uploadButton" style="display:none;">送出資料</button>
+        <!-- <button class="button" id="uploadButton" style="display:none;">送出</button> -->
+      </div>
+    </div>
+</body>
+<script>
+    //  改成div之後無法使用
+    //  function clearFormFields() {
+    //     var form = document.getElementById('fom1'); // 请替换成您表单的实际ID
+
+    //     // 清空表单字段的值
+    //     form.reset();
+    // }
+     // 获取复选框和按钮的元素
+     var privacyCheckbox = document.getElementById('privacyCheckbox');
+        var uploadButton = document.getElementById('uploadButton');
+
+        // 监听复选框的状态变化
+        privacyCheckbox.addEventListener('change', function () {
+            // 如果复选框被选中，显示按钮，否则隐藏按钮
+            if (privacyCheckbox.checked) {
+                uploadButton.style.display = 'block';
+            } else {
+                uploadButton.style.display = 'none';
+            }
+        });
+        
+</script>
+</html>

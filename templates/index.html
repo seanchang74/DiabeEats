@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>血糖值紀錄</title>
+    <!-- 引入 Plotly.js 库 -->
+    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+    <style>
+        /* 设置 div 元素的最大宽度，可以根据需要调整 */
+        .chart-container {
+            max-width: 70%;
+            margin: 0 auto; /* 将图表置中 */
+            flex-direction: row;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: space-between;
+            height: auto;
+            width: auto;
+
+        }
+        .container1 {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+            height: auto;
+            width: auto;
+
+        }
+        .user {
+            width: 100%;
+            float: left;
+            margin-left: 5%;
+            flex-direction: row;
+            color: #33828f;
+            font-size: 90%;
+        }
+        .date {
+            text-align: left;
+            float: right;
+            margin-right: 50%;
+            font-size: 90%;
+            color: #33828f;
+            white-space: nowrap; /* 禁止文本換行 */
+        }
+        .header {
+            width: 100%;
+            margin-top: -1%;
+            text-align: center;
+            margin-left: 5%;
+            text-align: left;
+            color: #33828f;
+            
+        }
+        .box {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px;
+            max-height: auto; /* 設置最大高度為自動 */
+            max-width: auto; /* 設置寬度為自動 */
+            height: auto; /* 設置高度為自動 */
+            border: 5px solid #248a82;
+            border-radius: 30px;
+            margin-left: 5%;
+            margin-right: 5%;
+        }
+
+        .left-column, .right-column {
+            flex: 1;
+            padding: 10px;
+        }
+        .box-header {
+            font-size: 100%;
+            font-weight: bold;
+            margin-left: 5%;
+            margin-bottom: 0%;
+            text-align: left;
+            color:#33828f;
+
+        }
+
+        .variable-L {
+            font-weight: bold;
+            margin-left: 10%;
+            text-align: left;
+
+        }
+        .variable-R {
+            font-size:120%;
+            font-weight: bold;
+            margin-left: 12%;
+            text-align: right;
+        }
+        .text-L {
+            font-size: 120%;
+            font-weight: bold;
+            margin-left: 20%;
+            text-align: left;
+            color:#33828f;
+
+        }
+        .text-R {
+            font-size: 120%;
+            font-weight: bold;
+            margin-left: 10%;
+            margin-right: 0%;
+            text-align: left;
+            color:#33828f;
+
+        }
+        .right-hint {
+            font-weight: bold;
+            margin-left: 25%;
+        }
+        .highlight-text {
+            font-size: 60%;
+            color:#057a8b;
+            background-color: #dcdbda;
+        }
+        .background-div {
+            background-image: url('https://storage.googleapis.com/html_asset/img/3.png');
+            background-size: contain; /* 使用contain來保持原始寬高比例 */
+            background-repeat: no-repeat; /* 防止圖片重複 */
+            background-position: center; /* 圖片在容器中居中 */
+            z-index: -1;
+           
+            width: 100%; 
+            height: 100%; 
+        }
+        .chart-title {
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: flex-start;
+            font-size: 16px;
+            color: #000;
+            padding-left: 20px; /* 调整标题与图表之间的间距 */
+        }
+
+    </style>
+</head>
+<body>
+    <div >
+        <div class="background-div">
+        
+            <div class="container1">
+                <div class="user">
+                    <p id="username" style="display: inline-block;"></p>
+                </div>
+                
+                
+                <p><span class="date" id="date_"></span> </p> 
+                
+            </div>
+            
+            <div class="header">
+                <h1>BLOOD GLUCOSE LOG</h1>
+            </div>
+            
+            <div class="box">
+                
+                <div class="left-column">
+                    <div class="box-header">
+                        --最後更新日血糖總攬--
+                    </div>
+                    <p><span class="text-L">最高:</span> <span class="variable-L" style="color: #f48a33;font-size:120%;" id="maxValue">{{ max_glucose }}  mg/dl</span></p>
+                    <p><span class="text-L">最低:</span> <span class="variable-L" style="color: #97bc32;font-size:120%;" id="minValue">{{ min_glucose }}  mg/dl</span></p>
+                    <p><span class="text-L">平均:</span> <span class="variable-L" style="color: #8c8b8b;font-size:120%;" id="avgValue">{{ avg_glucose }}  mg/dl</span></p>
+                </div>
+                <div class="right-column">
+                    <p><span class="variable-R" id="lageValue">{{ lage_glucose }}  mg/dl</span> <span class="text-R" id="maxValue">血糖波動幅度LAGE</span></p>
+                    <p><span class="variable-R" id="tirValue">{{ tir_glucose }}  %</span> <span class="text-R" id="maxValue">血糖目標範圍時間TIR</span></p>
+
+                    <div class="right-hint">
+                        <span class="highlight-text">血糖目標範圍 : 80~120mg/dl</span>
+                    </div>
+                    
+                </div>
+            </div>
+            
+        <div class="chart-container">
+            {% if charts_data.morning_glucose_chart %}
+            <div id="morning_glucose_chart"></div>
+            {% endif %}
+        </div>
+        
+        <div class="chart-container">
+            {% if charts_data.noon_glucose_chart %}
+            <div id="noon_glucose_chart"></div>
+            {% endif %}
+        </div>
+        
+        <div class="chart-container">
+            {% if charts_data.evening_glucose_chart %}
+            <div id="evening_glucose_chart"></div>
+            {% endif %}
+        </div>
+    </div>
+    </div>
+    <script> 
+    
+    var morningGlucoseChartData = '{{ charts_data.morning_glucose_chart| safe }}';
+    var noonGlucoseChartData = '{{ charts_data.noon_glucose_chart| safe }}';
+    var eveningGlucoseChartData = '{{ charts_data.evening_glucose_chart| safe }}';
+
+
+    if (morningGlucoseChartData !== "None") { 
+        morningGlucoseChartData = JSON.parse(morningGlucoseChartData); // 只有在不為 "None" 時才解析 JSON
+        Plotly.react('morning_glucose_chart', morningGlucoseChartData.data, morningGlucoseChartData.layout);
+    }
+
+    if (noonGlucoseChartData !== "None") { 
+        noonGlucoseChartData = JSON.parse(noonGlucoseChartData); 
+        Plotly.react('noon_glucose_chart', noonGlucoseChartData.data, noonGlucoseChartData.layout);
+    }
+
+    if (eveningGlucoseChartData !== "None") { 
+        eveningGlucoseChartData = JSON.parse(eveningGlucoseChartData);
+        Plotly.react('evening_glucose_chart', eveningGlucoseChartData.data, eveningGlucoseChartData.layout);
+    }
+
+    </script>
+</body>
+</html>
